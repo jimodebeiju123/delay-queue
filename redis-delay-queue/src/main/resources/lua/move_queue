@@ -1,0 +1,55 @@
+-- 将满足条件的消息 转移到指定的节点队列里面
+-- 传入当前时间
+local time = tonumber(ARGV[1])
+-- 处理消息的节点
+local broadcastNode = ARGV[2]
+--  当前任务触发的节点
+local handlerNode = ARGV[3]
+
+local nodeHostKey = KEYS[2]
+--  放入当前节点 在队列key中
+redis.call('SADD', nodeHostKey, handlerNode)
+
+-- redis.log('3', "当前没有处理设置的节点为:" .. handlerNode)
+-- 获取满足要求的数据
+local value1 = redis.call('ZRANGEBYSCORE', KEYS[1], '-inf', time, 'WITHSCORES')
+-- 如果没有满足条件的数据 直接返回
+if (next(value1) == nil) then
+    return
+end
+-- 当前没有处理节点 暂时不处理
+if (broadcastNode == nil or string.len(broadcastNode) == 0) then
+    return
+end
+-- 组装kv 参数
+local kvs = {};
+local kv;
+for i, v in pairs(value1) do
+    if (i % 2 == 0) then
+        kv = kv .. "," .. v;
+        table.insert(kvs, kv)
+    else
+        kv = v;
+    end
+end
+--  获取广播节点 SREM
+local broadcast = broadcastNode
+if (broadcast == 'ALL') then
+    -- 获取所有节点
+    broadcast = redis.call('SINTER', nodeHostKey)
+else
+    -- 移除当前已经分配的节点
+    redis.call('SREM', nodeHostKey, broadcast)
+    broadcast = { broadcast }
+end
+for i, v in pairs(kvs) do
+    for n, k in pairs(broadcast) do
+        redis.call('RPUSH', k, v)
+        -- 默认5分钟过期
+        redis.call('ZADD', KEYS[1] .. '_handlerhost', time + 5 * 60 * 1000, k)
+    end
+end
+-- 移除所有符合条件的数据
+redis.call('ZREMRANGEBYSCORE', KEYS[1], '-inf', time);
+-- 放入节点之后，节点服务器未消费或者消费一部分之后down 怎么处理
+-- 设置5分钟之后过期，将过期的节点数据重新放回队列中
