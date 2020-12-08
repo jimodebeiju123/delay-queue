@@ -3,7 +3,7 @@ redis延时队列
 
 基于redis的zset封装的延迟队列
 
-##使用方法 :  
+## 使用方法 :  
 1. mven 引入delay-queue-spring-boot-starter包
 2. spring中注入bean RedisTemplate<String, String> redisTemplate
 3. 配置文件增加redis.queue.enabled = true 来启用配置
@@ -11,7 +11,7 @@ redis延时队列
 5. 消息消费处理时,需要实现ConsumeMsgCallBack接口，并用注解 @RedisDelayQueueConsume(queueName = "test")来标示队列名称
 
 
-##发送消息：   
+## 发送消息：   
 >  
       @Autowired
       private RedisQueueTemplate<String> redisQueueTemplate;
@@ -25,7 +25,7 @@ redis延时队列
       redisQueueTemplate.sendMsgByDelayTime("queueName", "data", time);
 >
 
-##接收消息
+## 接收消息
 >
     @Service
     @RedisDelayQueueConsume(queueName = "test")
@@ -43,5 +43,9 @@ redis延时队列
         }
     }
 >
-
+## 后续计划
+1. 增加死信队列处理逻辑
+2. 增加广播模式
+3. 增加其他类型的key和value
+4. 去除RedisTemplate的依赖
 
