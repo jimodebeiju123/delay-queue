@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.ecs.redis.RedisQueueAutoConfigure,\
+com.ecs.redis.bean.RedisQueueSenderConfig,\
+com.ecs.redis.bean.RedisQueueConsumeConfig
