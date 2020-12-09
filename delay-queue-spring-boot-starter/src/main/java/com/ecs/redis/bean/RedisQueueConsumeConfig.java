@@ -24,6 +24,7 @@ import com.ecs.redis.service.ConsumeMsgServiceImpl;
 import com.ecs.redis.service.TransferMsgService;
 import com.ecs.redis.service.TransferMsgServiceImpl;
 import com.ecs.redis.task.MessageTask;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -36,6 +37,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  *
  * @author zhanglinfeng
  */
+@Slf4j
 @Configuration
 @ConditionalOnBean(RedisQueueAutoConfigure.class)
 @ConditionalOnProperty(prefix = "redis.queue", value = "consume-enabled", havingValue = "true")
@@ -95,6 +97,7 @@ public class RedisQueueConsumeConfig {
     @Bean
     @ConditionalOnMissingBean
     public MessageTask messageTask(MessageHandlerTask messageHandlerTask) {
+        log.info("初始化队列处理任务");
         return new MessageTask(messageHandlerTask);
     }
 

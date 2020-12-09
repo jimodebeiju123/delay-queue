@@ -26,6 +26,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * redis 延迟队列自动装配
@@ -33,6 +36,7 @@ import org.springframework.context.annotation.Configuration;
  * @author zhanglinfeng
  */
 @Configuration
+@EnableScheduling
 @ConditionalOnClass(MessageHandlerTask.class)
 @EnableConfigurationProperties(RedisQueueProperties.class)
 @ConditionalOnProperty(prefix = "redis.queue", value = "enabled", havingValue = "true")
@@ -66,4 +70,10 @@ public class RedisQueueAutoConfigure {
     }
 
 
+    @Bean
+    public TaskScheduler taskScheduler(){
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+        threadPoolTaskScheduler.setPoolSize(20);
+        return threadPoolTaskScheduler;
+    }
 }

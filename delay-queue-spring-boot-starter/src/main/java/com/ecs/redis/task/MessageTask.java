@@ -17,6 +17,7 @@
 package com.ecs.redis.task;
 
 import com.ecs.redis.handler.MessageHandlerTask;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.scheduling.annotation.Scheduled;
  *
  * @author zhanglinfeng
  */
+@Slf4j
 public class MessageTask {
 
     private MessageHandlerTask messageHandlerTask;
@@ -40,7 +42,7 @@ public class MessageTask {
     /**
      * 消息消费
      */
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 10000)
     public void consumeMsg() {
         messageHandlerTask.consumeMsg();
     }
