@@ -47,12 +47,12 @@ public class RedisDelayQueueConsumeHandler {
         for (Object value : beans.values()) {
             if (!(value instanceof ConsumeMsgCallBack)) {
                 log.warn("当前处理类不是[{}]的子类，无法初始化!", ConsumeMsgCallBack.class);
-                return;
+                continue;
             }
             RedisDelayQueueConsume consume = value.getClass().getAnnotation(RedisDelayQueueConsume.class);
             if (consume == null) {
                 log.debug("当前处理类没有注解:[{}]", RedisDelayQueueConsume.class);
-                return;
+                continue;
             }
             MsgHandlerContainer.addhandler(KeysUtils.getQueueKey(consume.queueName()), (ConsumeMsgCallBack) value);
         }
