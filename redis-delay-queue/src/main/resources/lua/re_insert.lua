@@ -14,7 +14,7 @@ local function lua_string_split(str, split_char)
     return sub_str_tab;
 end
 
---  将无法处理的消息再次放入到队列中
+--  将无法处理的消息
 local handlerhostkey = KEYS[1]
 -- 原始的消息所在的队列
 local queueName = KEYS[2]
@@ -38,8 +38,10 @@ for i, v in pairs(value1) do
             local score =lua_string_split(m,",")
             redis.call('ZADD',queueName,tonumber(score[2]),score[1])
         end
+        --删除处理节点的key
+        redis.call('DEL',v)
     end
-    --删除key
-    redis.call('DEL',v)
 end
+-- 移除所有符合条件的数据
+redis.call('ZREMRANGEBYSCORE', handlerhostkey, '-inf', time)
 return
