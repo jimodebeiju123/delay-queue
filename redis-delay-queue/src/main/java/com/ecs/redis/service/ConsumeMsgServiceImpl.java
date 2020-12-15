@@ -86,7 +86,7 @@ public class ConsumeMsgServiceImpl implements ConsumeMsgService {
         List<String> keys = Lists.newArrayList(KeysUtils.getHandlerhost(queueName), queueName);
         DefaultRedisScript<String> defaultRedisScript = new DefaultRedisScript<>();
         defaultRedisScript.setLocation(new ClassPathResource("lua/re_insert.lua"));
-        logger.info("开始执行队列:[{}]的重新插入",queueName);
+        logger.debug("开始执行队列:[{}]的重新插入",queueName);
         redisTemplate.execute(defaultRedisScript, keys, time+"");
     }
 }

@@ -63,7 +63,7 @@ public class MessageHandlerTask {
         //获取所有的队列
         Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
         if (CollectionUtils.isEmpty(allQueue)) {
-            logger.info("执行消息转移任务------->当前没有队列，不作任何处理");
+            logger.debug("执行消息转移任务------->当前没有队列，不作任何处理");
             return;
         }
         //获取当前时间
@@ -78,13 +78,13 @@ public class MessageHandlerTask {
     public void consumeMsg() {
         Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
         if (CollectionUtils.isEmpty(allQueue)) {
-            logger.info("执行消息消费任务------->当前没有队列，不作任何处理");
+            logger.debug("执行消息消费任务------->当前没有队列，不作任何处理");
             return;
         }
         allQueue.forEach(key -> {
             if (!MsgHandlerContainer.checkConsumeQueue(key)) {
                 MsgHandlerContainer.addConsumeQueue(key, CompletableFuture.runAsync(() -> {
-                    logger.info("开始执行消息消费");
+                    logger.debug("开始执行消息消费");
                     while (true) {
                         consumeMsgService.consumeMsg(key);
                     }
@@ -100,7 +100,7 @@ public class MessageHandlerTask {
     public void reInsertMsg() {
         Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
         if (CollectionUtils.isEmpty(allQueue)) {
-            logger.info("执行消息重新放入队列------->当前没有队列，不作任何处理");
+            logger.debug("执行消息重新放入队列------->当前没有队列，不作任何处理");
             return;
         }
         Long time = System.currentTimeMillis();

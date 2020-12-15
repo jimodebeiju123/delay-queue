@@ -51,7 +51,7 @@ public class RedisQueueTemplateImpl implements RedisQueueTemplate<String> {
      */
     @Override
     public void sendMsg(String queueName, String value, Long time) {
-        logger.info("开始发送消息[{}]到队列:[{}],消息延迟到:[{}]处理", value, queueName, time);
+        logger.debug("开始发送消息[{}]到队列:[{}],消息延迟到:[{}]处理", value, queueName, time);
         List<String> keys = Lists.newArrayList(KeysUtils.getQueueKey(queueName), KeysUtils.getQueueSetKey());
         DefaultRedisScript<String> defaultRedisScript = new DefaultRedisScript<>();
         defaultRedisScript.setLocation(new ClassPathResource("lua/add_queue.lua"));
@@ -79,7 +79,7 @@ public class RedisQueueTemplateImpl implements RedisQueueTemplate<String> {
      */
     @Override
     public void sendMsgs(String queueName, Set<ZSetOperations.TypedTuple<String>> typedTuples) {
-        logger.info("开始发送多个消息到队列:[{}]", queueName);
+        logger.debug("开始发送多个消息到队列:[{}]", queueName);
         String key = KeysUtils.getQueueKey(queueName);
         redisTemplate.opsForZSet().add(key, typedTuples);
         redisTemplate.opsForSet().add(KeysUtils.getQueueSetKey(), key);
