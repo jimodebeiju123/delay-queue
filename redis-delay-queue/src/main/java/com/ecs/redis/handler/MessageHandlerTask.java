@@ -19,7 +19,6 @@ package com.ecs.redis.handler;
 import com.ecs.redis.enums.BroadcastType;
 import com.ecs.redis.service.ConsumeMsgService;
 import com.ecs.redis.service.TransferMsgService;
-import com.ecs.redis.utils.KeysUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -64,12 +63,12 @@ public class MessageHandlerTask {
         //获取所有的队列
         Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
         if (CollectionUtils.isEmpty(allQueue)) {
-            logger.debug("执行消息转移任务------->当前没有队列，不作任何处理");
+            logger.info("执行消息转移任务------->当前没有队列，不作任何处理");
             return;
         }
         //获取当前时间
         Long time = System.currentTimeMillis();
-        allQueue.parallelStream().forEach(key ->
+        allQueue.forEach(key ->
                 transferMsgService.transferMsg(key, time, BroadcastType.COLONY));
     }
 
@@ -79,10 +78,10 @@ public class MessageHandlerTask {
     public void consumeMsg() {
         Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
         if (CollectionUtils.isEmpty(allQueue)) {
-            logger.debug("执行消息消费任务------->当前没有队列，不作任何处理");
+            logger.info("执行消息消费任务------->当前没有队列，不作任何处理");
             return;
         }
-        allQueue.parallelStream().forEach(key -> {
+        allQueue.forEach(key -> {
             if (!MsgHandlerContainer.checkConsumeQueue(key)) {
                 MsgHandlerContainer.addConsumeQueue(key, CompletableFuture.runAsync(() -> {
                     logger.info("开始执行消息消费");
@@ -101,11 +100,11 @@ public class MessageHandlerTask {
     public void reInsertMsg() {
         Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
         if (CollectionUtils.isEmpty(allQueue)) {
-            logger.debug("执行消息重新放入队列------->当前没有队列，不作任何处理");
+            logger.info("执行消息重新放入队列------->当前没有队列，不作任何处理");
             return;
         }
         Long time = System.currentTimeMillis();
-        allQueue.parallelStream().forEach(key -> consumeMsgService.reInsertMsg(key, time));
+        allQueue.forEach(key -> consumeMsgService.reInsertMsg(key, time));
     }
 
 }

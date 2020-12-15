@@ -52,7 +52,7 @@ public class TransferMsgServiceImpl implements TransferMsgService {
      */
     @Override
     public void transferMsg(String queueName, Long time, BroadcastType broadcastType) {
-        logger.debug("执行队列:[{}]大于[{}]的消息的转移", queueName, time);
+        logger.info("执行队列:[{}]小于[{}]的消息的转移", queueName, time);
         String queueNodeHostName = KeysUtils.getQueueNodeKey(queueName);
         List<String> keys = Lists.newArrayList(queueName, queueNodeHostName);
         DefaultRedisScript<String> defaultRedisScript = new DefaultRedisScript<>();
@@ -69,6 +69,8 @@ public class TransferMsgServiceImpl implements TransferMsgService {
      * @param queueNodeHostName
      */
     private String obtainClientNode(String queueNodeHostName) {
-        return redisTemplate.opsForSet().randomMember(queueNodeHostName);
+        String node = redisTemplate.opsForSet().randomMember(queueNodeHostName);
+        logger.info("获取到处理节点队列:[{}]的处理节点为:[{}]",queueNodeHostName,node);
+        return node;
     }
 }
