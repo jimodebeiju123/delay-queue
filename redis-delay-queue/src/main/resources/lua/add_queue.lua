@@ -16,4 +16,4 @@ redis.call('ZADD', queueName, msgScore,message)
 -- 保存queue
 redis.call('SADD', queueSet,queueName)
 
-
+return

@@ -62,7 +62,7 @@ public class MessageHandlerTask {
      */
     public void transferMsgs() {
         //获取所有的队列
-        Set<String> allQueue = redisTemplate.opsForSet().members(KeysUtils.getQueueSetKey());
+        Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
         if (CollectionUtils.isEmpty(allQueue)) {
             logger.debug("执行消息转移任务------->当前没有队列，不作任何处理");
             return;
@@ -77,7 +77,7 @@ public class MessageHandlerTask {
      * 消费处理
      */
     public void consumeMsg() {
-        Set<String> allQueue = redisTemplate.opsForSet().members(KeysUtils.getQueueSetKey());
+        Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
         if (CollectionUtils.isEmpty(allQueue)) {
             logger.debug("执行消息消费任务------->当前没有队列，不作任何处理");
             return;
@@ -99,7 +99,7 @@ public class MessageHandlerTask {
      * 将未消费(无法消费) 的消息重新放入队列
      */
     public void reInsertMsg() {
-        Set<String> allQueue = redisTemplate.opsForSet().members(KeysUtils.getQueueSetKey());
+        Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
         if (CollectionUtils.isEmpty(allQueue)) {
             logger.debug("执行消息重新放入队列------->当前没有队列，不作任何处理");
             return;

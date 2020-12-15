@@ -57,6 +57,8 @@ public class TransferMsgServiceImpl implements TransferMsgService {
         List<String> keys = Lists.newArrayList(queueName, queueNodeHostName);
         DefaultRedisScript<String> defaultRedisScript = new DefaultRedisScript<>();
         defaultRedisScript.setLocation(new ClassPathResource("lua/move_queue"));
+        //1.获取出当前需要处理的消息，将消息放入到处理队列中。如果没有处理队列，则将自己放入处理队列
+        //传入参数，key1 = 队列名称，key2= 该队列的所有处理节点， ARGV1 = 当前时间，ARGV2 = 随机获取的处理节点，ARGV3 = 当前节点
         redisTemplate.execute(defaultRedisScript, keys, time+"",
                 obtainClientNode(queueNodeHostName), KeysUtils.getHandlerNodeHostName(queueName));
     }

@@ -20,6 +20,7 @@ import com.ecs.redis.api.ConsumeMsgCallBack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,6 +47,14 @@ public class MsgHandlerContainer {
      */
     public static void addhandler(String queueName, ConsumeMsgCallBack consumeMsgCallBack) {
         consumeHandlerMap.putIfAbsent(queueName, consumeMsgCallBack);
+    }
+
+    /**
+     * 获取当前节点可以处理的所有队列,用来做消息转移和消费处理
+     * @return
+     */
+    public static Set<String> getAllQueueName(){
+        return consumeHandlerMap.keySet();
     }
 
     /**

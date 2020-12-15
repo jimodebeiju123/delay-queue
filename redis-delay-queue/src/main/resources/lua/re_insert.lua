@@ -21,7 +21,6 @@ local queueName = KEYS[2]
 -- 传入当前时间
 local time = tonumber(ARGV[1])
 
-
 -- 获取满足要求的数据
 local value1 = redis.call('ZRANGEBYSCORE', handlerhostkey, '-inf', time)
 
@@ -39,7 +38,8 @@ for i, v in pairs(value1) do
             local score =lua_string_split(m,",")
             redis.call('ZADD',queueName,tonumber(score[2]),score[1])
         end
-        --删除key
-        redis.call('DEL',v)
     end
+    --删除key
+    redis.call('DEL',v)
 end
+return
