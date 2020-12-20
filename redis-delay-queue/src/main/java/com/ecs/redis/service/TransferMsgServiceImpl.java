@@ -64,6 +64,18 @@ public class TransferMsgServiceImpl implements TransferMsgService {
     }
 
     /**
+     * 删除 队列中的处理节点
+     *
+     * @param queueName
+     */
+    @Override
+    public void deleteHostNameNode(String queueName) {
+        String queueNodeHostName = KeysUtils.getQueueNodeKey(queueName);
+        String hostName = KeysUtils.getHandlerNodeHostName(queueName);
+        redisTemplate.opsForSet().remove(queueNodeHostName,hostName);
+    }
+
+    /**
      * 随机获取处理节点
      *
      * @param queueNodeHostName

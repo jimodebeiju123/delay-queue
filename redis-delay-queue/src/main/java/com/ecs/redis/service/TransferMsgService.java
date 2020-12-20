@@ -32,4 +32,9 @@ public interface TransferMsgService {
      */
     void transferMsg(String queueName, Long time, BroadcastType broadcastType);
 
+    /**
+     * 删除 队列中的处理节点
+     * @param queueName
+     */
+    void deleteHostNameNode(String queueName);
 }

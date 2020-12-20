@@ -107,4 +107,16 @@ public class MessageHandlerTask {
         allQueue.forEach(key -> consumeMsgService.reInsertMsg(key, time));
     }
 
+    /**
+     * 删除所有处理节点
+     */
+    public void shutdown(){
+        Set<String> allQueue = MsgHandlerContainer.getAllQueueName();
+        if (CollectionUtils.isEmpty(allQueue)) {
+            logger.debug("当前节点没有需要处理的队列");
+            return;
+        }
+        allQueue.forEach(key -> transferMsgService.deleteHostNameNode(key));
+    }
+
 }

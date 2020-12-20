@@ -17,6 +17,7 @@
 package com.ecs.redis.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
@@ -26,6 +27,9 @@ import org.springframework.context.event.ContextRefreshedEvent;
 @Slf4j
 public class QueueContextRefreshedListener implements ApplicationListener<ContextRefreshedEvent> {
 
+
+    @Autowired
+    private MessageHandlerTask messageHandlerTask;
 
     /**
      * Handle an application event.
@@ -37,6 +41,7 @@ public class QueueContextRefreshedListener implements ApplicationListener<Contex
         if (event.getApplicationContext().getParent() == null) {
             log.info("绑定队列处理类与队列的关系..");
             RedisDelayQueueConsumeHandler.handler(event.getApplicationContext());
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> messageHandlerTask.shutdown()));
         }
 
     }
