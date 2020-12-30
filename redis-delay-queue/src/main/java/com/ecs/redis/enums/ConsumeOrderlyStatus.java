@@ -29,5 +29,5 @@ public enum ConsumeOrderlyStatus {
     /**
      * 消息消费失败
      */
-    ROLLBACK;
+    ROLLBACK,;
 }
