@@ -28,6 +28,12 @@ public class QueueConfig {
      */
     private Long consumeBlocksTime = 60L*60L*48L;
 
+    /**
+     * 消息消费重试次数
+     * 默认为3次
+     */
+    private Long retryNum = 3L;
+
 
 
     public Long getConsumeBlocksTime() {
@@ -36,5 +42,13 @@ public class QueueConfig {
 
     public void setConsumeBlocksTime(Long consumeBlocksTime) {
         this.consumeBlocksTime = consumeBlocksTime;
+    }
+
+    public Long getRetryNum() {
+        return retryNum;
+    }
+
+    public void setRetryNum(Long retryNum) {
+        this.retryNum = retryNum;
     }
 }

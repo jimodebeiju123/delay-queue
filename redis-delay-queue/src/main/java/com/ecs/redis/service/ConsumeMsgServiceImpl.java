@@ -18,6 +18,7 @@ package com.ecs.redis.service;
 
 import com.ecs.redis.api.ConsumeMsgCallBack;
 import com.ecs.redis.constant.QueueConfig;
+import com.ecs.redis.enums.ConsumeOrderlyStatus;
 import com.ecs.redis.handler.MsgHandlerContainer;
 import com.ecs.redis.utils.KeysUtils;
 import com.google.common.collect.Lists;
@@ -41,8 +42,10 @@ public class ConsumeMsgServiceImpl implements ConsumeMsgService {
 
     private QueueConfig queueConfig;
 
+
     /**
      * 初始化操作
+     *
      * @param redisTemplate
      * @param queueConfig
      */
@@ -62,15 +65,29 @@ public class ConsumeMsgServiceImpl implements ConsumeMsgService {
         try {
             String handlerNodeHostName = KeysUtils.getHandlerNodeHostName(queueName);
             String message = redisTemplate.opsForList()
-                    .leftPop(handlerNodeHostName,queueConfig.getConsumeBlocksTime(), TimeUnit.SECONDS);
+                    .rightPop(handlerNodeHostName, queueConfig.getConsumeBlocksTime(), TimeUnit.SECONDS);
             if (!StringUtils.isEmpty(message)) {
+                String[] allMsg = message.split(",");
+                String msg = allMsg[0];
                 ConsumeMsgCallBack callBack = MsgHandlerContainer.getHandler(queueName);
                 if (callBack != null) {
-                    callBack.handler(message.split(",")[0]);
+                    ConsumeOrderlyStatus consumeOrderlyStatus = callBack.consumeMsg(msg);
+                    if (ConsumeOrderlyStatus.SUCCESS.equals(consumeOrderlyStatus)) {
+                        //处理成功
+                        return;
+                    }
+                    Long num = redisTemplate.opsForValue().increment("queue_num:"+message.hashCode());
+                    //重试
+                    if ((num == null ? 0L : num) < queueConfig.getRetryNum()) {
+                        redisTemplate.opsForList().rightPush(handlerNodeHostName, message);
+                        return ;
+                    }
+                    //超过重试次数则丢弃
+                    redisTemplate.delete("queue_num:"+message.hashCode());
                 }
             }
         } catch (Exception e) {
-            logger.error("消息处理失败！连接已经超时");
+            logger.error("消息处理失败！连接已经超时", e);
         }
 
     }
@@ -86,7 +103,7 @@ public class ConsumeMsgServiceImpl implements ConsumeMsgService {
         List<String> keys = Lists.newArrayList(KeysUtils.getHandlerhost(queueName), queueName);
         DefaultRedisScript<String> defaultRedisScript = new DefaultRedisScript<>();
         defaultRedisScript.setLocation(new ClassPathResource("lua/re_insert.lua"));
-        logger.debug("开始执行队列:[{}]的重新插入",queueName);
-        redisTemplate.execute(defaultRedisScript, keys, time+"");
+        logger.debug("开始执行队列:[{}]的重新插入", queueName);
+        redisTemplate.execute(defaultRedisScript, keys, time + "");
     }
 }
