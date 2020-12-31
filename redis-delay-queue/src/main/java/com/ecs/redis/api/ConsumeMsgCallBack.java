@@ -16,17 +16,41 @@
  */
 package com.ecs.redis.api;
 
+import com.ecs.redis.enums.ConsumeOrderlyStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 
 /**
  * 消费消息
+ *
  * @author zhanglinfeng
  */
 public interface ConsumeMsgCallBack extends Serializable {
+    Logger log = LoggerFactory.getLogger(ConsumeMsgCallBack.class);
 
     /**
      * 处理消息消费
+     *
      * @param message
      */
     void handler(String message);
+
+
+    /**
+     * 消费消息
+     *
+     * @param message
+     * @return
+     */
+    default ConsumeOrderlyStatus consumeMsg(String message) {
+        try {
+            handler(message);
+            return ConsumeOrderlyStatus.SUCCESS;
+        } catch (Exception e) {
+            log.error("消息消费失败", e);
+        }
+        return ConsumeOrderlyStatus.ROLLBACK;
+    }
 }

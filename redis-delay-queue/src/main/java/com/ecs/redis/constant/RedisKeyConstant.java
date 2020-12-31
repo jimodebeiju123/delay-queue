@@ -30,6 +30,10 @@ public class RedisKeyConstant {
      * 处理节点后缀
      */
     public static final String QUEUE_HOSTNAME_SUFFIX = "_HOST_NAME";
+    /**
+     * 处理中的消息队列
+     */
+    public static final String ING = "_ING";
 
     /**
      * 标示队列的集合

@@ -51,7 +51,7 @@ else
 end
 for i, v in pairs(kvs) do
     for n, k in pairs(broadcast) do
-        redis.call('RPUSH', k, v)
+        redis.call('LPUSH', k, v)
         -- 默认3分钟过期 ,3分钟之后删除处理节点，将需要处理的消息重新放入到队列中
         redis.call('ZADD', KEYS[1] .. '_handlerhost', time + 3 * 60 * 1000, k)
     end

@@ -14,41 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ecs.redis.constant;
+package com.ecs.redis.enums;
+
 
 /**
- * 队列配置参数
+ * 消息消费状态
  * @author zhanglinfeng
  */
-public class QueueConfig {
-
+public enum ConsumeOrderlyStatus {
     /**
-     * 消费队列在无消息时阻塞超时时间，单位为秒
-     * 默认为36个小时
+     * 消息消费成功
      */
-    private Long consumeBlocksTime = 60L*60L*48L;
-
+    SUCCESS,
     /**
-     * 消息消费重试次数
-     * 默认为3次
+     * 消息消费失败
      */
-    private Long retryNum = 3L;
-
-
-
-    public Long getConsumeBlocksTime() {
-        return consumeBlocksTime;
-    }
-
-    public void setConsumeBlocksTime(Long consumeBlocksTime) {
-        this.consumeBlocksTime = consumeBlocksTime;
-    }
-
-    public Long getRetryNum() {
-        return retryNum;
-    }
-
-    public void setRetryNum(Long retryNum) {
-        this.retryNum = retryNum;
-    }
+    ROLLBACK,;
 }

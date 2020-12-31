@@ -54,6 +54,7 @@ public class RedisQueueAutoConfigure {
     public QueueConfig queueConfig(RedisQueueProperties redisQueueProperties) {
         QueueConfig queueConfig = new QueueConfig();
         queueConfig.setConsumeBlocksTime(redisQueueProperties.getConsumeBlocksTime());
+        queueConfig.setRetryNum(redisQueueProperties.getRetryNum());
         return queueConfig;
     }
 

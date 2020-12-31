@@ -42,6 +42,12 @@ public class RedisQueueProperties {
      */
     private Long consumeBlocksTime = 60L*60L*36L;
 
+    /**
+     * 消息消费重试次数
+     * 默认为3次
+     */
+    private Long retryNum = 3L;
+
 
 
 }

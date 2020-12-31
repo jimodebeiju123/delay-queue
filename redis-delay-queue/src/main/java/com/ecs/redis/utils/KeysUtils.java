@@ -55,6 +55,15 @@ public class KeysUtils {
     }
 
     /**
+     * 获取当前节点当前队列处理中的数据
+     * @param queueName
+     * @return
+     */
+    public static String getHandlerNodeHostNameIng(String queueName){
+        return getHandlerNodeHostName(queueName)+RedisKeyConstant.ING;
+    }
+
+    /**
      * 获取队列处理节点的key
      *
      * @param queueName
