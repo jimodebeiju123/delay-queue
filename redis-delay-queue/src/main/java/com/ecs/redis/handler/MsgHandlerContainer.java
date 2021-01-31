@@ -36,7 +36,7 @@ public class MsgHandlerContainer {
      */
     private static Map<String, ConsumeMsgCallBack> consumeHandlerMap = new HashMap<>(10);
 
-    private static Map<String, CompletableFuture> consumeQueue = new ConcurrentHashMap<>(10);
+    private static Map<String, CompletableFuture<Void>> consumeQueue = new ConcurrentHashMap<>(10);
 
 
     /**
@@ -74,7 +74,7 @@ public class MsgHandlerContainer {
      * @param queueName
      * @param future
      */
-    public static void addConsumeQueue(String queueName, CompletableFuture future) {
+    public static void addConsumeQueue(String queueName, CompletableFuture<Void> future) {
         consumeQueue.putIfAbsent(queueName, future);
     }
 
@@ -84,7 +84,7 @@ public class MsgHandlerContainer {
      * @param queueName
      * @return
      */
-    public static CompletableFuture getConsumeQueue(String queueName) {
+    public static CompletableFuture<Void> getConsumeQueue(String queueName) {
         return consumeQueue.get(queueName);
     }
 

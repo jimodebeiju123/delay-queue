@@ -34,7 +34,7 @@ import java.util.Set;
  * @author zhanglinfeng
  */
 public class RedisQueueTemplateImpl implements RedisQueueTemplate<String> {
-    private Logger logger = LoggerFactory.getLogger(RedisQueueTemplateImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(RedisQueueTemplateImpl.class);
 
     private RedisTemplate<String, String> redisTemplate;
 
