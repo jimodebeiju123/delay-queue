@@ -71,6 +71,10 @@ public class RedisQueueAutoConfigure {
     }
 
 
+    /**
+     * 定时任务处理线程
+     * @return
+     */
     @Bean
     public TaskScheduler taskScheduler(){
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();

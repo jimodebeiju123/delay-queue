@@ -42,7 +42,7 @@ public class MessageTask {
     /**
      * 消息消费
      */
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 5000)
     public void consumeMsg() {
         messageHandlerTask.consumeMsg();
     }
